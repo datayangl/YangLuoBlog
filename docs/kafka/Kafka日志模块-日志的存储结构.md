@@ -1,5 +1,5 @@
 # kafka 日志的存储结构
-![288A4762-6C22-4685-977B-C7E261078159.jpg](https://github.com/datayangl/YangLuoBlog/blob/master/docs/kafka/images/288A4762-6C22-4685-977B-C7E261078159.jpg)
+![kafka日志存储结构](https://github.com/datayangl/YangLuoBlog/blob/master/docs/kafka/images/288A4762-6C22-4685-977B-C7E261078159.jpg)
 
 
 Kafka 日志对象由多个日志段对象组成，而每个日志段对象会在磁盘上创建一组文件，包括消息日志文件（.log）、位移索引文件（.index）、时间戳索引文件（.timeindex）以及已中止（Aborted）事务的索引文件（.txnindex）。当然，如果你没有使用 Kafka 事务，已中止事务的索引文件是不会被创建出来的。图中的一串数字 0 是该日志段的起始位移值（Base Offset），也就是该日志段中所存的第一条消息的位移值。
@@ -68,7 +68,7 @@ def append(largestOffset: Long,
 ```
 
 append 方法接收 4 个参数，分别表示待写入消息批次中消息的最大位移值、最大时间戳、最大时间戳对应消息的位移以及真正要写入的消息集合。下面这张图展示了 append 方法的完整执行流程：
-![6700570d3052fcadda54767ed8dc385c](../images/8A3765A7-F36D-4551-A94C-4DF078426E7B.jpg)
+![append流程图](https://github.com/datayangl/YangLuoBlog/blob/master/docs/kafka/images/8A3765A7-F36D-4551-A94C-4DF078426E7B.jpg)
 第一步：
 在源码中，首先调用 log.sizeInBytes 方法判断该日志段是否为空，如果是空的话， Kafka 需要记录要写入消息集合的最大时间戳，并将其作为后面新增日志段倒计时的依据。
 
@@ -128,7 +128,7 @@ read 方法接收 4 个输入参数。
 前 3 个参数的含义很好理解，我重点说下第 4 个。当这个参数为 true 时，即使出现消息体字节数超过了 maxSize 的情形，read 方法依然能返回至少一条消息。引入这个参数主要是为了确保不出现消费饿死的情况。
 
 下图展示了 read 方法的完整执行逻辑：
-![61c97ee41b52e63e771cf5503e0ee345](../images/5D54F31A-08D9-4CDF-B040-0191BE8874D5.jpg)
+![read流程](https://github.com/datayangl/YangLuoBlog/blob/master/docs/kafka/images/5D54F31A-08D9-4CDF-B040-0191BE8874D5.jpg)
 
 第一步是调用 translateOffset 方法定位要读取的起始文件位置 （startPosition）。输入参数 startOffset 仅仅是位移值，Kafka 需要根据索引信息找到对应的物理文件位置才能开始读取消息。
 
@@ -192,7 +192,7 @@ def recover(producerStateManager: ProducerStateManager, leaderEpochCache: Option
     truncated
   }
 ```
-![eb5bd324685ee393e8a3072fc4b4276c](../images/8C0A7028-0F38-439F-85F7-138F3DA37DFC.jpg)
+![recover流程](https://github.com/datayangl/YangLuoBlog/blob/master/docs/kafka/images/8C0A7028-0F38-439F-85F7-138F3DA37DFC.jpg)
 
 recover 开始时，代码依次调用索引对象的 reset 方法清空所有的索引文件，之后会开始遍历日志段中的所有消息集合或消息批次（RecordBatch）。对于读取到的每个消息集合，日志段必须要确保它们是合法的，这主要体现在两个方面：
 该集合中的消息必须要符合 Kafka 定义的二进制格式；
