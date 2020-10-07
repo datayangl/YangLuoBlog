@@ -1,5 +1,5 @@
 # kafka 日志的存储结构
-![288A4762-6C22-4685-977B-C7E261078159.jpg](https://github.com/datayangl/YangLuoBlog/edit/master/docs/kafka/images)
+![288A4762-6C22-4685-977B-C7E261078159.jpg](../images/288A4762-6C22-4685-977B-C7E261078159.jpg)
 
 
 Kafka 日志对象由多个日志段对象组成，而每个日志段对象会在磁盘上创建一组文件，包括消息日志文件（.log）、位移索引文件（.index）、时间戳索引文件（.timeindex）以及已中止（Aborted）事务的索引文件（.txnindex）。当然，如果你没有使用 Kafka 事务，已中止事务的索引文件是不会被创建出来的。图中的一串数字 0 是该日志段的起始位移值（Base Offset），也就是该日志段中所存的第一条消息的位移值。
